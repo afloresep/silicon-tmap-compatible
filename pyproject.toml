@@ -46,15 +46,15 @@ before-build = """\
 LIBOGDF_INSTALL_PATH="$(pwd)/libOGDF"
 
 [tool.cibuildwheel.macos]
-# For now build `x86_64` and `arm64` instead of `universal2` because we currently do
-# not build /usr/local/lib/libOGDF.dylib under `arm64` for some reason.
-archs = ["x86_64", "arm64"]
+# Only build arm64 for Apple Silicon (M1+)
+archs = ["arm64"]
 before-all = ["brew install libomp llvm"]
 # NOTE: we delete build/ here as we're build multiple wheels and we support
 #       different SIMD commands on different platforms.
 before-build = """\
   mkdir -p $LIBOGDF_INSTALL_PATH && \
   cd ./ogdf-conda/src && \
+  rm -rf build && \
   mkdir -p build && \
   cd build && \
   cmake .. \
@@ -62,6 +62,9 @@ before-build = """\
         -DCMAKE_INSTALL_PREFIX=$LIBOGDF_INSTALL_PATH \
         -DBUILD_SHARED_LIBS=ON \
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+        -DCMAKE_OSX_ARCHITECTURES=arm64 \
+        -DCMAKE_C_COMPILER=$(brew --prefix llvm)/bin/clang \
+        -DCMAKE_CXX_COMPILER=$(brew --prefix llvm)/bin/clang++ \
         && \
   make -j4 && \
   make install && \
@@ -77,6 +80,7 @@ repair-wheel-command = [
 LIBOGDF_INSTALL_PATH="$(pwd)/libOGDF"
 CXX="$(brew --prefix llvm)/bin/clang++"
 CC="$(brew --prefix llvm)/bin/clang"
+ARCHFLAGS="-arch arm64"
 
 [tool.cibuildwheel.windows]
 archs = ["AMD64"]
