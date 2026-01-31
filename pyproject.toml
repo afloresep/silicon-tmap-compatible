@@ -77,6 +77,10 @@ repair-wheel-command = [
 [tool.cibuildwheel.macos.environment]
 LIBOGDF_INSTALL_PATH="$(pwd)/libOGDF"
 ARCHFLAGS="-arch arm64"
+CFLAGS="-I$(brew --prefix libomp)/include"
+CXXFLAGS="-I$(brew --prefix libomp)/include"
+LDFLAGS="-L$(brew --prefix libomp)/lib -lomp"
+OpenMP_ROOT="$(brew --prefix libomp)"
 
 [tool.cibuildwheel.windows]
 archs = ["AMD64"]
