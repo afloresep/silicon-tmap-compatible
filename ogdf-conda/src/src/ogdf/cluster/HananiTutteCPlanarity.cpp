@@ -39,6 +39,7 @@
 #include <ogdf/cluster/ClusterPlanarity.h>
 #include <unordered_map>
 #include <map>
+#include <chrono>
 
 using std::unordered_map;
 using std::map;
