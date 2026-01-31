@@ -31,16 +31,24 @@ jobs:
     name: Build ${{ matrix.only }}
     needs: generate-wheels-matrix
     runs-on: ${{ matrix.os }}
+    env:
+      MACOSX_DEPLOYMENT_TARGET: '14.0'
     strategy:
       matrix:
         include: ${{ fromJson(needs.generate-wheels-matrix.outputs.include) }}
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set deployment target for macOS
+        if: runner.os == 'macOS'
+        run: echo "MACOSX_DEPLOYMENT_TARGET=14.0" >> $GITHUB_ENV
+
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.22.0
         with:
           only: ${{ matrix.only }}
+        env:
+          MACOSX_DEPLOYMENT_TARGET: '14.0'
 
       - uses: actions/upload-artifact@v4
         with:

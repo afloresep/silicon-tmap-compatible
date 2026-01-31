@@ -6,7 +6,7 @@ list(INSERT CMAKE_MODULE_PATH 0 "${module_dir}" )
 
 # Set minimum macOS deployment target for arm64 compatibility
 if(APPLE)
-  set(CMAKE_OSX_DEPLOYMENT_TARGET "11.0" CACHE STRING "Minimum macOS version" FORCE)
+  set(CMAKE_OSX_DEPLOYMENT_TARGET "14.0" CACHE STRING "Minimum macOS version" FORCE)
 endif()
 
 if(DEFINED ENV{ARCHFLAGS})
