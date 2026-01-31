@@ -1,49 +1,119 @@
-# tmap
-tmap is a very fast visualization library for large, high-dimensional data sets. Currently, tmap is available for Python. tmaps graph layouts are based on the [OGDF](https://ogdf.uos.de/) library.
+# tmap (Python 3.9+ & Apple Silicon Compatible)
 
-### Tutorial and Documentation
-See <a href="http://tmap.gdb.tools">http://tmap.gdb.tools</a>
+This is a fork of [tmap](https://github.com/reymond-group/tmap) that is compatible with **Python 3.9-3.12** and **Apple Silicon (arm64)**.
 
-## Notebook
+tmap is a very fast visualization library for large, high-dimensional data sets. The graph layouts are based on the [OGDF](https://ogdf.uos.de/) library.
 
-## Examples
-<img src="examples/drugbank/drugbank.jpg" height="290px"/>  <img src="examples/mnist/mnist.jpg" height="290px" />
+## Installation
 
-| Name | Description |   |
-| ---- | ----------- | - |
-| NIPS Conference Papers | A tmap visualization showing the linguistic relationship between NIPS conference papers. | [view](http://tmap.gdb.tools/src/nips/nips_papers.html) |
-| Project Gutenberg | A tmap visualization of the linguistic relationships between books and authors extracted from Project Gutenberg. | [view](http://tmap.gdb.tools/src/gutenberg/gutenberg.html) |
-| MNIST | A visualization of the well known MNIST data set. No further explanation needed. | [view](http://tmap.gdb.tools/src/mnist/mnist.html) |
-| Fashion MNIST | A visualization of a more fashionable variant of MNIST. | [view](http://tmap.gdb.tools/src/fmnist/fmnist.html) |
-| Drugbank | A tmap visualization of all drugs registered in Drugbank. | [view](http://tmap.gdb.tools/src/drugbank/drugbank.html) |
-| RNAseq | RNA sequencing data of tumor samples. Visualized using tmap. | [view](http://tmap.gdb.tools/src/rnaseq/rnaseq.html) |
-| Flowcytometry | Flowcytometry data visualized using tmap. | [view](http://tmap.gdb.tools/src/flowcytometry/cyto.html) |
-| MiniBooNE | tmap data visualization of a particle detection physics experiment.  | [view](http://tmap.gdb.tools/src/miniboone/miniboone.html) |
-
-
-### Availability
-| Language | Operating System | Status                 |
-| -------- | ---------------- | ---------------------- |
-| Python   | Linux            | Available              |
-|          | Windows          | Available<sup>1</sup>  |
-|          | macOS            | Available              |
-| R        |                  | Unvailable<sup>2</sup> |
-
-<span class="small"><sup>1</sup>Works with
-[WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10)</span>
-<span class="small"><sup>2</sup>FOSS R developers
-[wanted](https://github.com/reymond-group/tmap)\!</span>
-
-### Installation
-tmap is installed using the conda package manager. Don't have conda? Download miniconda.
+### Option 1: Install from GitHub (Recommended)
 
 ```bash
-conda install -c tmap tmap
+pip install git+https://github.com/afloresep/silicon-tmap-compatible.git
 ```
 
-We suggest using faerun to plot the data layed out by tmap. But you can of course also use matplotlib (which might be to slow for large data sets and doesn't provide interactive features).
+### Option 2: Install from pre-built wheels
+
+Check the [Releases](https://github.com/afloresep/silicon-tmap-compatible/releases) page for pre-built wheels for your platform.
+
+### Option 3: Build from source
+
+For Apple Silicon Macs or if you need to build from source:
+
+```bash
+# Clone the repository
+git clone https://github.com/afloresep/silicon-tmap-compatible.git
+cd silicon-tmap-compatible
+
+# Create conda environment with build dependencies
+conda create -n tmap python=3.12 -y
+conda activate tmap
+conda install -c conda-forge cmake ninja llvm-openmp numpy scipy matplotlib annoy pybind11 -y
+
+# Build OGDF
+cd ogdf-conda/src
+mkdir -p build installed
+cd build
+cmake .. \
+  -DCMAKE_INSTALL_PREFIX="$PWD/../installed" \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_OSX_ARCHITECTURES=arm64  # Only for Apple Silicon
+cmake --build . --parallel
+cmake --install .
+cd ../../..
+
+# Install tmap
+export LIBOGDF_INSTALL_PATH="$PWD/ogdf-conda/src/installed"
+pip install . --no-build-isolation
+```
+
+## Visualization
+
+We recommend using [faerun](https://github.com/reymond-group/faerun-python) to plot the data laid out by tmap:
 
 ```bash
 pip install faerun
-# pip install matplotlib
 ```
+
+## Quick Example
+
+```python
+import tmap as tm
+import numpy as np
+
+# Generate random data
+data = np.random.rand(1000, 100)
+
+# Create MinHash fingerprints
+mh = tm.Minhash(128)
+fps = [tm.VectorFloat(row) for row in data]
+lf = tm.LSHForest(128)
+lf.batch_add(mh.batch_from_weight_array(fps))
+lf.index()
+
+# Layout
+cfg = tm.LayoutConfiguration()
+cfg.k = 20
+x, y, s, t, _ = tm.layout_from_lsh_forest(lf, cfg)
+
+# Plot with faerun or matplotlib
+import matplotlib.pyplot as plt
+plt.scatter(x, y, s=1)
+plt.show()
+```
+
+## Tutorial and Documentation
+
+See the original documentation at [http://tmap.gdb.tools](http://tmap.gdb.tools)
+
+## Examples
+
+| Name | Description |
+| ---- | ----------- |
+| [MNIST](http://tmap.gdb.tools/src/mnist/mnist.html) | Visualization of the MNIST data set |
+| [Drugbank](http://tmap.gdb.tools/src/drugbank/drugbank.html) | All drugs registered in Drugbank |
+| [Project Gutenberg](http://tmap.gdb.tools/src/gutenberg/gutenberg.html) | Linguistic relationships between books |
+
+## Compatibility
+
+| Python | Linux | macOS Intel | macOS Apple Silicon | Windows |
+|--------|-------|-------------|---------------------|---------|
+| 3.9    | ✅    | ✅          | ✅                  | ✅      |
+| 3.10   | ✅    | ✅          | ✅                  | ✅      |
+| 3.11   | ✅    | ✅          | ✅                  | ✅      |
+| 3.12   | ✅    | ✅          | ✅                  | ✅      |
+
+## Changes from Original
+
+- Fixed compatibility with Python 3.9-3.12
+- Fixed Apple Silicon (arm64) builds
+- Updated deprecated `distutils` imports
+- Added proper `pyproject.toml` build configuration
+
+## License
+
+BSD 3-Clause License - see [LICENSE.md](LICENSE.md)
+
+## Credits
+
+Original tmap by [Daniel Probst](https://github.com/daenuprobst) and the [Reymond Group](https://github.com/reymond-group).
