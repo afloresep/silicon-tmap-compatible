@@ -4,15 +4,12 @@ import multiprocessing
 import os
 import re
 import sys
-import sysconfig
 import platform
 import subprocess
 
 from packaging.version import Version
 from setuptools import setup, Extension, find_packages
 from setuptools.command.build_ext import build_ext
-from setuptools.command.test import test as TestCommand
-from shutil import copyfile, copymode
 
 
 class CMakeExtension(Extension):
@@ -47,6 +44,7 @@ class CMakeBuild(build_ext):
             "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=" + extdir,
             "-DPYTHON_EXECUTABLE=" + sys.executable,
             "-DPYBIND11_CPP_STANDARD=/std:c++17",
+            "-DCMAKE_POLICY_VERSION_MINIMUM=3.5",  # For compatibility with old pybind11
         ]
 
         cfg = "Debug" if self.debug else "Release"
@@ -112,6 +110,5 @@ setup(
     package_dir={"": "src"},
     ext_modules=[CMakeExtension("_tmap")],
     cmdclass=dict(build_ext=CMakeBuild),
-    test_suite="tests",
     zip_safe=False,
 )
