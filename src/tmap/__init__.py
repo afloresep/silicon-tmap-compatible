@@ -1,4 +1,4 @@
-from _tmap import *
+from ._tmap import *
 
 from .embedding import embed
 

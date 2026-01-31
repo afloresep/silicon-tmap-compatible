@@ -1,7 +1,7 @@
 from typing import Dict, Any, Iterable
 from tmap.core import TMAPEmbedding
-import _tmap as tm
-from _tmap import Minhash, LSHForest, VectorUchar, layout_from_lsh_forest
+import tmap._tmap as tm
+from tmap._tmap import Minhash, LSHForest, VectorUchar, layout_from_lsh_forest
 from .base_layout_generator import BaseLayoutGenerator
 
 

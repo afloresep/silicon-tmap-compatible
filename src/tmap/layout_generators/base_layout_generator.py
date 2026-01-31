@@ -1,4 +1,4 @@
-import _tmap as tm
+import tmap._tmap as tm
 from typing import Iterable, List, Tuple
 
 from tmap.core import TMAPEmbedding

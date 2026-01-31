@@ -23,6 +23,8 @@ project(_tmap)
 # Put LIBOGDF on the include- and lib-path
 include_directories($ENV{LIBOGDF_INSTALL_PATH}/include)
 link_directories($ENV{LIBOGDF_INSTALL_PATH}/lib)
+# Also check for arch-specific lib directory (e.g., lib/x86_64-linux-gnu on Debian/Ubuntu)
+link_directories($ENV{LIBOGDF_INSTALL_PATH}/lib/${CMAKE_LIBRARY_ARCHITECTURE})
 
 if(MSVC)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /O2")
