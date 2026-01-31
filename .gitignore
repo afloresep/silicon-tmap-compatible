@@ -177,3 +177,10 @@ wheelhouse
 
 # the intermediate build of OGDF
 libOGDF
+
+# Build artifacts
+ogdf-conda/src/build/
+ogdf-conda/src/installed/
+build/
+*.so
+*.egg-info/
