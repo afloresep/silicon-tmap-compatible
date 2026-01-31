@@ -4,6 +4,11 @@ project(OGDF-PROJECT CXX)
 set(module_dir "${PROJECT_SOURCE_DIR}/cmake")
 list(INSERT CMAKE_MODULE_PATH 0 "${module_dir}" )
 
+# Set minimum macOS deployment target for arm64 compatibility
+if(APPLE)
+  set(CMAKE_OSX_DEPLOYMENT_TARGET "11.0" CACHE STRING "Minimum macOS version" FORCE)
+endif()
+
 if(DEFINED ENV{ARCHFLAGS})
   # Parse the cibuildwheel ARCHFLAGS env variable as something we can understand on
   #  OSX, initially.
@@ -11,7 +16,7 @@ if(DEFINED ENV{ARCHFLAGS})
   string(REPLACE " " ";" NEW_ARCHFLAGS "${NEW_ARCHFLAGS}")
 
   # The following, CMAKE_OSX_ARCHITECTURES, is ignored on non-osx platforms
-  set(CMAKE_OSX_ARCHITECTURES "${NEW_ARCHFLAGS}")
+  set(CMAKE_OSX_ARCHITECTURES "${NEW_ARCHFLAGS}" CACHE STRING "Target architecture" FORCE)
 endif(DEFINED ENV{ARCHFLAGS})
 
 # build type configuration

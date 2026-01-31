@@ -4,6 +4,11 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Set minimum macOS deployment target for arm64 compatibility
+if(APPLE)
+  set(CMAKE_OSX_DEPLOYMENT_TARGET "11.0" CACHE STRING "Minimum macOS version" FORCE)
+endif()
+
 if(MSVC)
     set(CMAKE_GENERATOR_TOOLSET "ClangCL")
 endif(MSVC)
@@ -15,7 +20,7 @@ if(DEFINED ENV{ARCHFLAGS})
   string(REPLACE " " ";" NEW_ARCHFLAGS "${NEW_ARCHFLAGS}")
 
   # The following, CMAKE_OSX_ARCHITECTURES, is ignored on non-osx platforms
-  set(CMAKE_OSX_ARCHITECTURES "${NEW_ARCHFLAGS}")
+  set(CMAKE_OSX_ARCHITECTURES "${NEW_ARCHFLAGS}" CACHE STRING "Target architecture" FORCE)
 endif(DEFINED ENV{ARCHFLAGS})
 
 project(_tmap)
