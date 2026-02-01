@@ -3,7 +3,7 @@ requires = ["setuptools>=61", "wheel", "packaging", "cmake", "pybind11"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "tmap-viz"
+name = "tmap-silicon"
 description = "A Python package for visualizing large, high-dimensional data sets."
 readme = "README.md"
 keywords = ["visualization", "dimensionality-reduction", "machine-learning", "chemistry"]
