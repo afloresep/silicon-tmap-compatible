@@ -108,7 +108,7 @@ setup(
     long_description="",
     packages=find_packages("src"),
     package_dir={"": "src"},
-    ext_modules=[CMakeExtension("_tmap")],
+    ext_modules=[CMakeExtension("tmap._tmap")],
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
 )
