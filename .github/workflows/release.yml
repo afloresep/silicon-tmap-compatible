@@ -1,0 +1,88 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build_wheels:
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    env:
+      MACOSX_DEPLOYMENT_TARGET: '14.0'
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            cibw_archs: "x86_64"
+          - os: macos-14
+            cibw_archs: "arm64"
+          - os: windows-latest
+            cibw_archs: "AMD64"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set deployment target for macOS
+        if: runner.os == 'macOS'
+        run: echo "MACOSX_DEPLOYMENT_TARGET=14.0" >> $GITHUB_ENV
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.22.0
+        env:
+          CIBW_ARCHS: ${{ matrix.cibw_archs }}
+          MACOSX_DEPLOYMENT_TARGET: '14.0'
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.os }}
+          path: ./wheelhouse/*.whl
+
+  build_sdist:
+    name: Build source distribution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build sdist
+        run: pipx run build --sdist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sdist
+          path: dist/*.tar.gz
+
+  upload_release:
+    name: Upload to GitHub Release
+    needs: [build_wheels, build_sdist]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Upload wheels to release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Optional: upload to PyPI (uncomment when ready)
+  # upload_pypi:
+  #   name: Upload to PyPI
+  #   needs: [build_wheels, build_sdist]
+  #   runs-on: ubuntu-latest
+  #   environment: pypi
+  #   permissions:
+  #     id-token: write
+  #   steps:
+  #     - uses: actions/download-artifact@v4
+  #       with:
+  #         path: dist
+  #         merge-multiple: true
+  #
+  #     - uses: pypa/gh-action-pypi-publish@release/v1

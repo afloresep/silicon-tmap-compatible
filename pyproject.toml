@@ -17,7 +17,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 requires-python = ">=3.9"
-dependencies = ["matplotlib", "annoy ~= 1.17.0", "scipy"]
+dependencies = ["matplotlib", "annoy ~= 1.17.0", "scipy", "faerun"]
 dynamic = ["version"]
 authors = [
   {"name" = "Daniel Probst", "email" = "daenuprobst@gmail.com"},
