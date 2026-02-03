@@ -9,7 +9,7 @@ tmap is a very fast visualization library for large, high-dimensional data sets.
 ### Option 1: Install from GitHub (Recommended)
 
 ```bash
-pip install git+https://github.com/afloresep/silicon-tmap-compatible.git
+pip install tmap-silicon
 ```
 
 ### Option 2: Install from pre-built wheels
