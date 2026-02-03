@@ -1,3 +1,7 @@
+[![PyPI - Downloads](https://static.pepy.tech/badge/tmap-silicon)](https://pepy.tech/project/tmap-silicon)
+[![PyPI - Monthly](https://static.pepy.tech/badge/tmap-silicon/month)](https://pepy.tech/project/tmap-silicon)
+
+
 # tmap (Python 3.9+ & Apple Silicon Compatible)
 
 This is a fork of [tmap](https://github.com/reymond-group/tmap) that is compatible with **Python 3.9-3.12** and **Apple Silicon (arm64)**.
