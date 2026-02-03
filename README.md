@@ -6,53 +6,10 @@ tmap is a very fast visualization library for large, high-dimensional data sets.
 
 ## Installation
 
-### Option 1: Install from GitHub (Recommended)
+### Option 1: Install from pip
 
 ```bash
 pip install tmap-silicon
-```
-
-### Option 2: Install from pre-built wheels
-
-Check the [Releases](https://github.com/afloresep/silicon-tmap-compatible/releases) page for pre-built wheels for your platform.
-
-### Option 3: Build from source
-
-For Apple Silicon Macs or if you need to build from source:
-
-```bash
-# Clone the repository
-git clone https://github.com/afloresep/silicon-tmap-compatible.git
-cd silicon-tmap-compatible
-
-# Create conda environment with build dependencies
-conda create -n tmap python=3.12 -y
-conda activate tmap
-conda install -c conda-forge cmake ninja llvm-openmp numpy scipy matplotlib annoy pybind11 -y
-
-# Build OGDF
-cd ogdf-conda/src
-mkdir -p build installed
-cd build
-cmake .. \
-  -DCMAKE_INSTALL_PREFIX="$PWD/../installed" \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_OSX_ARCHITECTURES=arm64  # Only for Apple Silicon
-cmake --build . --parallel
-cmake --install .
-cd ../../..
-
-# Install tmap
-export LIBOGDF_INSTALL_PATH="$PWD/ogdf-conda/src/installed"
-pip install . --no-build-isolation
-```
-
-## Visualization
-
-We recommend using [faerun](https://github.com/reymond-group/faerun-python) to plot the data laid out by tmap:
-
-```bash
-pip install faerun
 ```
 
 ## Quick Example
